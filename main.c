@@ -2,6 +2,7 @@
 #include <gtk/gtk.h>
 #include <webkit2/webkit2.h>
 
+#include "context.h"
 #include "view.h"
 
 const char* browser_name = "luna";
@@ -10,7 +11,11 @@ const char* gtk_identifier = "com.github.rlupton20.luna";
 static void inner_main(void* closure, int argc, char** argv);
 static void activate(GtkApplication* application, gpointer user_data);
 
-int main(int argc, char **argv) {
+// Temporarily global
+static GtkWidget* window;
+
+int main(int argc, char **argv)
+{
   GtkApplication* application;
   int status;
 
@@ -23,10 +28,12 @@ int main(int argc, char **argv) {
 }
 
 
-static void activate(GtkApplication* application, gpointer user_data) {
-  GtkWidget* window = gtk_application_window_new(application);
+static void activate(GtkApplication* application, gpointer user_data)
+{
+  window = gtk_application_window_new(application);
   gtk_window_set_title(GTK_WINDOW(window), browser_name);
   gtk_window_set_default_size(GTK_WINDOW(window), 200, 200);
+
 
   scm_boot_guile(0, 0, inner_main, 0);
   
@@ -42,7 +49,9 @@ static void activate(GtkApplication* application, gpointer user_data) {
 }
 
 
-static void inner_main(void* closure, int argc, char** argv) {
+static void inner_main(void* closure, int argc, char** argv)
+{
   init_luna_view_type();
+  register_window_context(window);
   scm_shell(argc, argv);
 }

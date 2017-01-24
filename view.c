@@ -34,7 +34,7 @@ static SCM make_luna_view(void)
 static size_t free_luna_view(SCM luna_view_smob)
 {
   luna_view* view = (luna_view *) SCM_SMOB_DATA(luna_view_smob);
-  //  free(view->view);
+  free(view->view);
   scm_gc_free(view, sizeof(luna_view), type_name);
   return 0;
 }
@@ -66,6 +66,4 @@ WebKitWebView* get_view(SCM luna_view_smob)
   view = (luna_view *) SCM_SMOB_DATA (luna_view_smob);
   return view->view;
 }
-  
-  
   
