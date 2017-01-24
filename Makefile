@@ -3,14 +3,16 @@ EXECUTABLE=luna
 
 CC=gcc
 
+C_FLAGS=-g
+
 GTK_C_FLAGS=`pkg-config --cflags gtk+-3.0`
 GTK_LINK_FLAGS=`pkg-config --libs gtk+-3.0`
 
-WEBKIT_C_FLAGS=`pkg-config --cflags webkit2gtk-3.0`
-WEBKIT_LINK_FLAGS=`pkg-config --libs webkit2gtk-3.0`
+WEBKIT_C_FLAGS=`pkg-config --cflags webkit2gtk-4.0`
+WEBKIT_LINK_FLAGS=`pkg-config --libs webkit2gtk-4.0`
 
 luna: main.c
-	$(CC) $(GTK_C_FLAGS) $(WEBKIT_C_FLAGS) -o $(EXECUTABLE) main.c $(GTK_LINK_FLAGS) $(WEBKIT_LINK_FLAGS)
+	$(CC) $(C_FLAGS) $(GTK_C_FLAGS) $(WEBKIT_C_FLAGS) -o $(EXECUTABLE) main.c $(GTK_LINK_FLAGS) $(WEBKIT_LINK_FLAGS)
 
 install:
 	install -d $(BINDIR)

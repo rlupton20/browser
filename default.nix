@@ -9,7 +9,7 @@ in rec {
     src = ./.;
     buildInputs = [ pkgs.pkgconfig
                     pkgs.gnome3.gtk
-		    pkgs.gnome3.webkitgtk24x
+		    pkgs.gnome3.webkitgtk
 		    pkgs.guile
 		    pkgs.gsettings_desktop_schemas
 		    pkgs.makeWrapper ];

@@ -29,6 +29,8 @@ static void activate(GtkApplication* application, gpointer user_data) {
   
   /* Load an example web page */
   webkit_web_view_load_uri(view, "http://www.google.com/");
+
+  gtk_widget_grab_focus(GTK_WIDGET(view));
   
   gtk_widget_show_all(window);
 }
