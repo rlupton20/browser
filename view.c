@@ -6,6 +6,7 @@
 #include <stdlib.h>
 
 #include "view.h"
+#include "context.h"
 
 static const char* type_name = "luna_view";
 static scm_t_bits luna_view_tag;
@@ -17,6 +18,7 @@ static int print_luna_view(SCM luna_view_smob,
 			   scm_print_state *pstate);
 
 static SCM load_uri(SCM view, SCM uri);
+static SCM focus_view(SCM context, SCM view);
 
 static SCM make_luna_view(void)
 {
@@ -75,6 +77,15 @@ static SCM load_uri(SCM view, SCM uri)
 }
 
 
+static SCM focus_view(SCM context, SCM view)
+{
+  GtkWidget* window = get_window(context);
+  scm_assert_smob_type(luna_view_tag, view);
+  gtk_container_add(GTK_CONTAINER(window), GTK_WIDGET(get_view(view)));
+  return view;
+}
+
+
 void init_luna_view_type(void)
 {
   luna_view_tag = scm_make_smob_type(type_name, sizeof(luna_view));
@@ -83,4 +94,5 @@ void init_luna_view_type(void)
 
   scm_c_define_gsubr("new-view", 0, 0, 0, make_luna_view);
   scm_c_define_gsubr("load-uri", 2, 0, 0, load_uri);
+  scm_c_define_gsubr("focus-view", 2, 0, 0, focus_view);
 }

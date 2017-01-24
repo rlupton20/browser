@@ -8,11 +8,11 @@
 const char* browser_name = "luna";
 const char* gtk_identifier = "com.github.rlupton20.luna";
 
-static void inner_main(void* closure, int argc, char** argv);
+static void inner_main(void* closure);
 static void activate(GtkApplication* application, gpointer user_data);
 
 // Temporarily global
-static GtkWidget* window;
+GtkWidget* window;
 
 int main(int argc, char **argv)
 {
@@ -34,23 +34,20 @@ static void activate(GtkApplication* application, gpointer user_data)
   gtk_window_set_title(GTK_WINDOW(window), browser_name);
   gtk_window_set_default_size(GTK_WINDOW(window), 200, 200);
 
+  scm_init_guile();
+  init_luna_view_type();
+  register_window_context(window);
+  scm_c_primitive_load("luna.scm");
 
-  scm_boot_guile(0, 0, inner_main, 0);
-  
-  WebKitWebView * view = WEBKIT_WEB_VIEW(webkit_web_view_new());
-  gtk_container_add(GTK_CONTAINER(window), GTK_WIDGET(view));
-  
-  /* Load an example web page */
-  webkit_web_view_load_uri(view, "http://www.google.com/");
-
+  luna_view* view = (luna_view*) SCM_SMOB_DATA(scm_c_eval_string("view"));
   gtk_widget_show_all(window);
 }
 
 
-static void inner_main(void* closure, int argc, char** argv)
+static void inner_main(void* closure)
 {
   init_luna_view_type();
   register_window_context(window);
   scm_c_primitive_load("luna.scm");
-  scm_shell(argc, argv);
+  gtk_widget_show_all(window);
 }

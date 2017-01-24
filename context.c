@@ -15,7 +15,7 @@ static print_context(SCM luna_context_smob,
 		     scm_print_state *pstate);
 
 
-void register_window_context(GtkWidget* window)
+SCM register_window_context(GtkWidget* window)
 {
   SCM smob;
   luna_context* lc;
@@ -27,6 +27,7 @@ void register_window_context(GtkWidget* window)
     smob = scm_new_smob(luna_context_tag, lc);
     scm_set_smob_print(luna_context_tag, print_context);
     scm_c_define("window", smob);
+    return smob;
   }
   else {
     exit(1);

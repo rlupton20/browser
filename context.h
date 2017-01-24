@@ -7,7 +7,7 @@ typedef struct _luna_context {
   GtkWidget* window;
 } luna_context;
 
-void register_window_context(GtkWidget* window);
+SCM register_window_context(GtkWidget* window);
 
 GtkWidget* get_window(SCM context_smob);
 
