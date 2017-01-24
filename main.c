@@ -1,9 +1,13 @@
+#include <libguile.h>
 #include <gtk/gtk.h>
 #include <webkit2/webkit2.h>
+
+#include "view.h"
 
 const char* browser_name = "luna";
 const char* gtk_identifier = "com.github.rlupton20.luna";
 
+static void inner_main(void* closure, int argc, char** argv);
 static void activate(GtkApplication* application, gpointer user_data);
 
 int main(int argc, char **argv) {
@@ -24,6 +28,8 @@ static void activate(GtkApplication* application, gpointer user_data) {
   gtk_window_set_title(GTK_WINDOW(window), browser_name);
   gtk_window_set_default_size(GTK_WINDOW(window), 200, 200);
 
+  scm_boot_guile(0, 0, inner_main, 0);
+  
   WebKitWebView * view = WEBKIT_WEB_VIEW(webkit_web_view_new());
   gtk_container_add(GTK_CONTAINER(window), GTK_WIDGET(view));
   
@@ -35,3 +41,8 @@ static void activate(GtkApplication* application, gpointer user_data) {
   gtk_widget_show_all(window);
 }
 
+
+static void inner_main(void* closure, int argc, char** argv) {
+  init_luna_view_type();
+  scm_shell(argc, argv);
+}
