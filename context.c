@@ -22,11 +22,15 @@ void register_window_context(GtkWidget* window)
 
   luna_context_tag = scm_make_smob_type(type_name, sizeof(luna_context));
   
-  lc = (luna_context *) scm_gc_malloc(sizeof(luna_context), type_name);
-  lc->window = window;
-  smob = scm_new_smob(luna_context_tag, lc);
-  scm_set_smob_print(luna_context_tag, print_context);
-  scm_c_define("window", smob);
+  if ( lc = calloc(1, sizeof(luna_context)) ) {
+    lc->window = window;
+    smob = scm_new_smob(luna_context_tag, lc);
+    scm_set_smob_print(luna_context_tag, print_context);
+    scm_c_define("window", smob);
+  }
+  else {
+    exit(1);
+  }
 }
 
 
@@ -36,4 +40,12 @@ static print_context(SCM luna_context_smob,
 {
   scm_puts("<#context>", port);
   return 1;
+}
+
+
+GtkWidget* get_window(SCM context_smob) {
+  luna_context* lc;
+  scm_assert_smob_type(luna_context_tag, context_smob);
+  lc = (luna_context *) SCM_SMOB_DATA(context_smob);
+  return lc->window;
 }

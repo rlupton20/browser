@@ -16,6 +16,8 @@ static int print_luna_view(SCM luna_view_smob,
 			   SCM port,
 			   scm_print_state *pstate);
 
+static SCM load_uri(SCM view, SCM uri);
+
 static SCM make_luna_view(void)
 {
   SCM smob;
@@ -49,6 +51,30 @@ static int print_luna_view(SCM luna_view_smob,
 }
 
 
+
+
+WebKitWebView* get_view(SCM luna_view_smob)
+{
+  luna_view * view;
+  scm_assert_smob_type(luna_view_tag, luna_view_smob);
+  view = (luna_view *) SCM_SMOB_DATA(luna_view_smob);
+  return view->view;
+}
+  
+
+static SCM load_uri(SCM view, SCM uri)
+{
+  char* c_uri;
+  scm_assert_smob_type(luna_view_tag, view);
+  
+  c_uri = scm_to_locale_string(uri);
+  webkit_web_view_load_uri(get_view(view), c_uri);
+
+  free(c_uri);
+  return uri;
+}
+
+
 void init_luna_view_type(void)
 {
   luna_view_tag = scm_make_smob_type(type_name, sizeof(luna_view));
@@ -56,14 +82,5 @@ void init_luna_view_type(void)
   scm_set_smob_print(luna_view_tag, print_luna_view);
 
   scm_c_define_gsubr("new-view", 0, 0, 0, make_luna_view);
+  scm_c_define_gsubr("load-uri", 2, 0, 0, load_uri);
 }
-
-
-WebKitWebView* get_view(SCM luna_view_smob)
-{
-  luna_view * view;
-  scm_assert_smob_type(luna_view_tag, luna_view_smob);
-  view = (luna_view *) SCM_SMOB_DATA (luna_view_smob);
-  return view->view;
-}
-  
