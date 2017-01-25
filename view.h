@@ -7,7 +7,7 @@
 
 typedef struct _luna_view {
   WebKitWebView * view;
-} luna_view;
+} LunaView;
 
 void init_luna_view_type(void);
 

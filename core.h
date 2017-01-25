@@ -5,7 +5,7 @@
 
 typedef struct _luna_core {
   GtkWidget* window;
-} luna_core;
+} LunaCore;
 
 SCM create_core(GtkApplication* application);
 

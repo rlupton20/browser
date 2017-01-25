@@ -26,9 +26,9 @@ static SCM go_back(SCM view);
 static SCM make_luna_view(void)
 {
   SCM smob;
-  luna_view *l_view;
+  LunaView *l_view;
 
-  l_view = (luna_view *) scm_gc_malloc(sizeof(luna_view), type_name);
+  l_view = (LunaView *) scm_gc_malloc(sizeof(LunaView), type_name);
   WebKitWebView * view = WEBKIT_WEB_VIEW(webkit_web_view_new());
 
   l_view->view = view;
@@ -40,9 +40,9 @@ static SCM make_luna_view(void)
 
 static size_t free_luna_view(SCM luna_view_smob)
 {
-  luna_view* view = (luna_view *) SCM_SMOB_DATA(luna_view_smob);
+  LunaView* view = (LunaView *) SCM_SMOB_DATA(luna_view_smob);
   free(view->view);
-  scm_gc_free(view, sizeof(luna_view), type_name);
+  scm_gc_free(view, sizeof(LunaView), type_name);
   return 0;
 }
 
@@ -58,9 +58,9 @@ static int print_luna_view(SCM luna_view_smob,
 
 WebKitWebView* get_view(SCM luna_view_smob)
 {
-  luna_view * view;
+  LunaView * view;
   scm_assert_smob_type(luna_view_tag, luna_view_smob);
-  view = (luna_view *) SCM_SMOB_DATA(luna_view_smob);
+  view = (LunaView *) SCM_SMOB_DATA(luna_view_smob);
   return view->view;
 }
   
@@ -105,7 +105,7 @@ static SCM go_back(SCM view)
 
 void init_luna_view_type(void)
 {
-  luna_view_tag = scm_make_smob_type(type_name, sizeof(luna_view));
+  luna_view_tag = scm_make_smob_type(type_name, sizeof(LunaView));
   scm_set_smob_free(luna_view_tag, free_luna_view);
   scm_set_smob_print(luna_view_tag, print_luna_view);
 

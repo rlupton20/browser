@@ -23,11 +23,11 @@ static GtkWidget* create_browser_window(GtkApplication* application);
 SCM create_core(GtkApplication* application)
 {
   SCM smob;
-  luna_core* lc;
+  LunaCore* lc;
 
-  luna_core_tag = scm_make_smob_type(type_name, sizeof(luna_core));
+  luna_core_tag = scm_make_smob_type(type_name, sizeof(LunaCore));
   
-  if ( lc = calloc(1, sizeof(luna_core)) ) {
+  if ( lc = calloc(1, sizeof(LunaCore)) ) {
     lc->window = create_browser_window(application);
   
     smob = scm_new_smob(luna_core_tag, lc);
@@ -53,9 +53,9 @@ static print_core(SCM luna_core_smob,
 
 GtkWidget* get_window(SCM core_smob)
 {
-  luna_core* lc;
+  LunaCore* lc;
   scm_assert_smob_type(luna_core_tag, core_smob);
-  lc = (luna_core *) SCM_SMOB_DATA(core_smob);
+  lc = (LunaCore *) SCM_SMOB_DATA(core_smob);
   return lc->window;
 }
 
