@@ -19,6 +19,8 @@ static int print_luna_view(SCM luna_view_smob,
 
 static SCM load_uri(SCM view, SCM uri);
 static SCM focus_view(SCM context, SCM view);
+static SCM go_back_p(SCM view);
+static SCM go_back(SCM view);
 
 static SCM make_luna_view(void)
 {
@@ -85,6 +87,21 @@ static SCM focus_view(SCM context, SCM view)
   return view;
 }
 
+static SCM go_back_p(SCM view)
+{
+  int res;
+  scm_assert_smob_type(luna_view_tag, view);
+  res = webkit_web_view_can_go_back(get_view(view));
+  return scm_from_bool(res);
+}
+
+static SCM go_back(SCM view)
+{
+  scm_assert_smob_type(luna_view_tag, view);
+  webkit_web_view_go_back(get_view(view));
+  return view;
+}
+
 
 void init_luna_view_type(void)
 {
@@ -95,4 +112,6 @@ void init_luna_view_type(void)
   scm_c_define_gsubr("new-view", 0, 0, 0, make_luna_view);
   scm_c_define_gsubr("load-uri", 2, 0, 0, load_uri);
   scm_c_define_gsubr("focus-view", 2, 0, 0, focus_view);
+  scm_c_define_gsubr("back-page-p", 1, 0, 0, go_back_p);
+  scm_c_define_gsubr("back-page", 1, 0, 0, go_back);
 }
