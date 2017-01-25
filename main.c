@@ -8,7 +8,6 @@
 const char* browser_name = "luna";
 const char* gtk_identifier = "com.github.rlupton20.luna";
 
-static void inner_main(void* closure);
 static void activate(GtkApplication* application, gpointer user_data);
 
 // Temporarily global
@@ -40,14 +39,5 @@ static void activate(GtkApplication* application, gpointer user_data)
   scm_c_primitive_load("luna.scm");
 
   luna_view* view = (luna_view*) SCM_SMOB_DATA(scm_c_eval_string("view"));
-  gtk_widget_show_all(window);
-}
-
-
-static void inner_main(void* closure)
-{
-  init_luna_view_type();
-  register_window_context(window);
-  scm_c_primitive_load("luna.scm");
   gtk_widget_show_all(window);
 }
