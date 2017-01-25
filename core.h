@@ -7,7 +7,7 @@ typedef struct _luna_core {
   GtkWidget* window;
 } luna_core;
 
-SCM register_window_context(GtkWidget* window);
+SCM create_core(GtkApplication* application);
 
 GtkWidget* get_window(SCM core_smob);
 

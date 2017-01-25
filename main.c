@@ -5,13 +5,9 @@
 #include "core.h"
 #include "view.h"
 
-const char* browser_name = "luna";
 const char* gtk_identifier = "com.github.rlupton20.luna";
 
 static void activate(GtkApplication* application, gpointer user_data);
-
-// Temporarily global
-GtkWidget* window;
 
 int main(int argc, char **argv)
 {
@@ -29,15 +25,14 @@ int main(int argc, char **argv)
 
 static void activate(GtkApplication* application, gpointer user_data)
 {
-  window = gtk_application_window_new(application);
-  gtk_window_set_title(GTK_WINDOW(window), browser_name);
-  gtk_window_set_default_size(GTK_WINDOW(window), 200, 200);
-
+  SCM core_smob;
+  
   scm_init_guile();
+
+  core_smob = create_core(application);
   init_luna_view_type();
-  register_window_context(window);
+  
   scm_c_primitive_load("luna.scm");
 
-  luna_view* view = (luna_view*) SCM_SMOB_DATA(scm_c_eval_string("view"));
-  gtk_widget_show_all(window);
+  gtk_widget_show_all(get_window(core_smob));
 }
