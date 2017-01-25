@@ -6,7 +6,7 @@
 #include <stdlib.h>
 
 #include "view.h"
-#include "context.h"
+#include "core.h"
 
 static const char* type_name = "luna_view";
 static scm_t_bits luna_view_tag;
@@ -21,6 +21,7 @@ static SCM load_uri(SCM view, SCM uri);
 static SCM focus_view(SCM context, SCM view);
 static SCM go_back_p(SCM view);
 static SCM go_back(SCM view);
+
 
 static SCM make_luna_view(void)
 {
@@ -53,8 +54,6 @@ static int print_luna_view(SCM luna_view_smob,
   scm_puts("<#luna_view>", port);
   return 1;
 }
-
-
 
 
 WebKitWebView* get_view(SCM luna_view_smob)
@@ -94,6 +93,7 @@ static SCM go_back_p(SCM view)
   res = webkit_web_view_can_go_back(get_view(view));
   return scm_from_bool(res);
 }
+
 
 static SCM go_back(SCM view)
 {

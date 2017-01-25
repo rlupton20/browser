@@ -3,7 +3,7 @@ let
   stdenv = pkgs.stdenv;
   glib_networking = pkgs.glib_networking;
 in rec {
-  guiletoy = stdenv.mkDerivation rec {
+  luna = stdenv.mkDerivation rec {
     name = "luna";
     version = "0.0.1";
     src = ./.;

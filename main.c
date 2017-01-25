@@ -2,7 +2,7 @@
 #include <gtk/gtk.h>
 #include <webkit2/webkit2.h>
 
-#include "context.h"
+#include "core.h"
 #include "view.h"
 
 const char* browser_name = "luna";
