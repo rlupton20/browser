@@ -5,8 +5,9 @@
 #include <webkit2/webkit2.h>
 #include <stdlib.h>
 
-#include "view.h"
 #include "core.h"
+#include "view.h"
+#include "keyboard.h"
 
 static const char* type_name = "luna_view";
 static scm_t_bits luna_view_tag;
@@ -18,7 +19,7 @@ static int print_luna_view(SCM luna_view_smob,
 			   scm_print_state *pstate);
 
 static SCM load_uri(SCM view, SCM uri);
-static SCM focus_view(SCM context, SCM view);
+static SCM focus_view(SCM view);
 static SCM go_back_p(SCM view);
 static SCM go_back(SCM view);
 
@@ -30,6 +31,10 @@ static SCM make_luna_view(void)
 
   l_view = (LunaView *) scm_gc_malloc(sizeof(LunaView), type_name);
   WebKitWebView * view = WEBKIT_WEB_VIEW(webkit_web_view_new());
+
+  /* Pass keypress events out to the scheme handler */
+  g_signal_connect(view, "key_press_event",
+		   G_CALLBACK(keypress_correlator), NULL);
 
   l_view->view = view;
   smob = scm_new_smob(luna_view_tag, l_view);
@@ -78,9 +83,10 @@ static SCM load_uri(SCM view, SCM uri)
 }
 
 
-static SCM focus_view(SCM context, SCM view)
+static SCM focus_view(SCM view)
 {
-  GtkWidget* window = get_window(context);
+  SCM core = scm_c_eval_string("core");
+  GtkWidget* window = get_window(core);
   scm_assert_smob_type(luna_view_tag, view);
   gtk_container_add(GTK_CONTAINER(window), GTK_WIDGET(get_view(view)));
   return view;
@@ -111,7 +117,7 @@ void init_luna_view_type(void)
 
   scm_c_define_gsubr("new-view", 0, 0, 0, make_luna_view);
   scm_c_define_gsubr("load-uri", 2, 0, 0, load_uri);
-  scm_c_define_gsubr("focus-view", 2, 0, 0, focus_view);
+  scm_c_define_gsubr("focus-view", 1, 0, 0, focus_view);
   scm_c_define_gsubr("back-page-p", 1, 0, 0, go_back_p);
   scm_c_define_gsubr("back-page", 1, 0, 0, go_back);
 }

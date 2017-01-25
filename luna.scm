@@ -1,7 +1,7 @@
 (define view (new-view))
 
 (load-uri view "http://www.google.com")
-(focus-view core view)
+(focus-view view)
 
-(if (back-page-p view)
-    (load-uri view "http://www.github.com"))
+(define (handle-keypress)
+  (back-page view))

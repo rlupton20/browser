@@ -5,7 +5,7 @@
 #include <gtk/gtk.h>
 
 gboolean keypress_correlator(GtkWidget *widget,
-			     GdkEvent *event,
+			     GdkEventKey *event,
 			     gpointer user_data);
 
 #endif

@@ -5,6 +5,7 @@
 
 typedef struct _luna_core {
   GtkWidget* window;
+  GtkWidget* current_focused;
 } LunaCore;
 
 SCM create_core(GtkApplication* application);

@@ -29,6 +29,7 @@ SCM create_core(GtkApplication* application)
   
   if ( lc = calloc(1, sizeof(LunaCore)) ) {
     lc->window = create_browser_window(application);
+    lc->current_focused = lc->window;
   
     smob = scm_new_smob(luna_core_tag, lc);
     scm_set_smob_print(luna_core_tag, print_core);
