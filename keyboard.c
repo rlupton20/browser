@@ -12,12 +12,12 @@ gboolean keypress_correlator(GtkWidget *widget,
 			     GdkEventKey *event,
 			     gpointer user_data)
 {
-  SCM pass_through_scm;
-  static const char dispatch[1024];
+  SCM pass_through;
   if (event->type == GDK_KEY_PRESS) {
-    sprintf(dispatch, "(dispatch-keypress \"%s\")",
-	    gdk_keyval_name(event->keyval));
-    pass_through_scm = scm_c_eval_string(dispatch);
+    pass_through = scm_call_2( scm_c_eval_string("dispatch-keypress"),
+			       scm_from_int(event->state),
+			       scm_from_int(event->keyval) );
+    return scm_to_bool(pass_through);
   }
   return 0;
 }

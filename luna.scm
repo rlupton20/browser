@@ -3,7 +3,9 @@
 (load-uri view "http://www.google.com")
 (focus-view view)
 
-(define (dispatch-keypress keyseq)
-  (cond
-   ((string=? keyseq "H") (back-page view))
-   (else #f)))
+(define catch-keypress
+  (lambda (f)
+    #t))
+
+(define (dispatch-keypress mask keyseq)
+  #f)
