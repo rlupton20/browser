@@ -22,7 +22,5 @@ in rec {
 	--prefix XDG_DATA_DIRS : "$GSETTINGS_SCHEMAS_PATH"
     '';
     
-    C_INCLUDE_PATH = "${pkgs.guile}/include/guile/2.0/";
-    
   };
 }
