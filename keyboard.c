@@ -3,17 +3,22 @@
 #include <libguile.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
+#include <stdio.h>
 
 #include "keyboard.h"
+
 
 gboolean keypress_correlator(GtkWidget *widget,
 			     GdkEventKey *event,
 			     gpointer user_data)
 {
-  if (event->type == GDK_KEY_PRESS && event->keyval == GDK_KEY_H) {
-    scm_c_eval_string("(back-page view)");
-    return 1;
+  SCM pass_through_scm;
+  static const char dispatch[1024];
+  if (event->type == GDK_KEY_PRESS) {
+    sprintf(dispatch, "(dispatch-keypress \"%s\")",
+	    gdk_keyval_name(event->keyval));
+    pass_through_scm = scm_c_eval_string(dispatch);
   }
-  else
-    return 0;
+  return 0;
 }
+
