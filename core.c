@@ -27,7 +27,9 @@ SCM create_core(GtkApplication* application)
 
   luna_core_tag = scm_make_smob_type(type_name, sizeof(LunaCore));
   
-  if ( lc = calloc(1, sizeof(LunaCore)) ) {
+  if ( (lc = calloc(1, sizeof(LunaCore))) == NULL )
+    exit(1);
+  else {
     lc->window = create_browser_window(application);
     lc->current_focused = lc->window;
   
@@ -36,9 +38,6 @@ SCM create_core(GtkApplication* application)
     scm_c_define("core", smob);
 
     return smob;
-  }
-  else {
-    exit(1);
   }
 }
 
@@ -63,8 +62,13 @@ GtkWidget* get_window(SCM core_smob)
 
 static GtkWidget* create_browser_window(GtkApplication* application)
 {
-  GtkWidget* window = gtk_application_window_new(application);
-  gtk_window_set_title(GTK_WINDOW(window), browser_name);
-  gtk_window_set_default_size(GTK_WINDOW(window), 200, 200);
-  return window;
+  GtkWidget* window;
+
+  if ( (window = gtk_application_window_new(application)) == NULL )
+    exit(1);
+  else {
+    gtk_window_set_title(GTK_WINDOW(window), browser_name);
+    gtk_window_set_default_size(GTK_WINDOW(window), 200, 200);
+    return window;
+  }
 }

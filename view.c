@@ -4,6 +4,7 @@
 #include <gtk/gtk.h>
 #include <webkit2/webkit2.h>
 #include <stdlib.h>
+#include <assert.h>
 
 #include "core.h"
 #include "view.h"
@@ -30,7 +31,10 @@ static SCM make_luna_view(void)
   LunaView *l_view;
 
   l_view = (LunaView *) scm_gc_malloc(sizeof(LunaView), type_name);
+  if (l_view == 0) exit(1);
+
   WebKitWebView * view = WEBKIT_WEB_VIEW(webkit_web_view_new());
+  if (view == 0) exit(1);
 
   /* Pass keypress events out to the scheme handler */
   g_signal_connect(view, "key_press_event",
@@ -46,6 +50,10 @@ static SCM make_luna_view(void)
 static size_t free_luna_view(SCM luna_view_smob)
 {
   LunaView* view = (LunaView *) SCM_SMOB_DATA(luna_view_smob);
+
+  assert(view != 0);
+  assert(view->view != 0);
+
   free(view->view);
   scm_gc_free(view, sizeof(LunaView), type_name);
   return 0;
@@ -68,13 +76,13 @@ WebKitWebView* get_view(SCM luna_view_smob)
   view = (LunaView *) SCM_SMOB_DATA(luna_view_smob);
   return view->view;
 }
-  
+
 
 static SCM load_uri(SCM view, SCM uri)
 {
   char* c_uri;
   scm_assert_smob_type(luna_view_tag, view);
-  
+
   c_uri = scm_to_locale_string(uri);
   webkit_web_view_load_uri(get_view(view), c_uri);
 
@@ -87,7 +95,10 @@ static SCM focus_view(SCM view)
 {
   SCM core = scm_c_eval_string("core");
   GtkWidget* window = get_window(core);
+
+  assert(window != 0);
   scm_assert_smob_type(luna_view_tag, view);
+
   gtk_container_add(GTK_CONTAINER(window), GTK_WIDGET(get_view(view)));
   return view;
 }
@@ -96,6 +107,7 @@ static SCM go_back_p(SCM view)
 {
   int res;
   scm_assert_smob_type(luna_view_tag, view);
+
   res = webkit_web_view_can_go_back(get_view(view));
   return scm_from_bool(res);
 }
@@ -104,6 +116,7 @@ static SCM go_back_p(SCM view)
 static SCM go_back(SCM view)
 {
   scm_assert_smob_type(luna_view_tag, view);
+
   webkit_web_view_go_back(get_view(view));
   return view;
 }
